@@ -31,8 +31,6 @@ export class SignupComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    var user = JSON.parse(this.token.getUser());
-    var role = user.role;
   }
 
   onSubmit(){
