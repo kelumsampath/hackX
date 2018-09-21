@@ -30,7 +30,7 @@ const appRoutes: Routes = [
   {
     path: 'signup',
     component: SignupComponent,
-    canActivate : [AfterLoginService]
+    canActivate : [BeforeLoginService]
   },
   {
     path: 'users',
