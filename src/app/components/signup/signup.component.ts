@@ -33,14 +33,6 @@ export class SignupComponent implements OnInit {
   ngOnInit() {
     var user = JSON.parse(this.token.getUser());
     var role = user.role;
-
-    if(role == 'Student' || role == 'Teacher' || role == 'Parent')
-      this.router.navigateByUrl('/notices');
-
-    if(role == 'CompanyAdmin')
-      this.company = true;
-    else
-      this.company = false;
   }
 
   onSubmit(){
