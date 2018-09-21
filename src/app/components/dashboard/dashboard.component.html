@@ -1,0 +1,114 @@
+<div class="container text-right" style="margin-top: 30px;">
+  <a class="text-white btn btn-info" (click)='add()' *ngIf="staff">Add New Notice</a> 
+</div>
+<br>
+<hr>
+<br>
+
+<div class="container"  *ngFor="let n of notice; let count = index;">
+  <div class="">
+      <div class="card" style="border-radius: 1rem; box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);">
+        <div class="card-body">
+          <h5 class="card-title">{{ n.title }}</h5>
+          <p class="card-text">{{ n.notice }}</p>
+        </div>
+        <div class="card-footer text-center">
+          <small class="text-muted">{{ n.updated_at }}</small><br>
+          <div *ngIf="staff">
+            <a href="javascript:void(0)" class="item"  (click)='pause( n.id )' data-toggle="tooltip" data-placement="top" title="Pause" style="padding-right: 10px;" *ngIf="n.active">
+                <i class="fa fa-pause"></i>
+            </a> 
+            <a href="javascript:void(0)" class="item"  (click)='pause( n.id )' data-toggle="tooltip" data-placement="top" title="Continue" style="padding-right: 10px;" *ngIf="!n.active">
+                <i class="fa fa-play"></i>
+            </a>   
+            <a href="javascript:void(0)" class="item"  (click)='edit( n.id )' data-toggle="tooltip" data-placement="top" title="Edit" style="padding-right: 10px;">
+                <i class="fa fa-edit"></i>
+            </a> 
+            <a href="javascript:void(0)" class="item"  (click)='delete( n.id )' data-toggle="tooltip" data-placement="top" title="Delete" style="padding-right: 10px;">
+                <i class="fa fa-trash"></i>
+            </a> 
+          </div>
+        </div>
+      </div>
+    </div>
+    <br><br>
+  </div>
+
+<!-- The Modal -->
+<div id="modal" class="modal" style="background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Notice</h5>
+            <button type="button" class="close" (click)='close()'>
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                  <label for="title">Title</label>
+                  <input type="text" class="form-control" id="title" placeholder="Enter title"  required [(ngModel)]="ed.title"/>
+              </div>
+              
+              <div class="form-group">
+                  <label for="notice">Notice</label>
+                  <textarea class="form-control" id="notice" placeholder="Enter notice"  required [(ngModel)]="ed.notice" required rows="7"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="notice">For</label>
+                    <select class="form-control" name="role" id="inputRole" required [(ngModel)]="ed.role">
+                        <option value="Student">Student</option>
+                        <option value="Parent">Parent</option>
+                        <option value="Both">Both</option>
+                      </select>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)='editsub()'>Save changes</button>
+            <button type="button" class="btn btn-secondary" (click)='close()'>Close</button>
+          </div>
+        </div>
+      </div>
+
+</div>
+
+<!-- The Modal -->
+<div id="modaladd" class="modal" style="background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Notice</h5>
+            <button type="button" class="close" (click)='closeadd()'>
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            
+              <div class="form-group">
+                  <label for="title">Title</label>
+                  <input type="text" class="form-control" id="title" placeholder="Enter title"  required [(ngModel)]="eda.title"/>
+              </div>
+              
+              <div class="form-group">
+                  <label for="notice">Notice</label>
+                  <textarea class="form-control" id="notice" placeholder="Enter notice"  required [(ngModel)]="eda.notice" rows="7"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="notice">For</label>
+                    <select class="form-control" name="role" id="inputRole" required [(ngModel)]="eda.role">
+                        <option value="Student">Student</option>
+                        <option value="Parent">Parent</option>
+                        <option value="Both">Both</option>
+                      </select>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)='addnot()'>Save changes</button>
+            <button type="button" class="btn btn-secondary" (click)='closeadd()'>Close</button>
+          </div>
+        </div>
+      </div>
+
+</div>

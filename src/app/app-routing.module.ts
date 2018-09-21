@@ -2,38 +2,55 @@ import { NgModule, Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { SignupComponent } from './components/signup/signup.component';
-import { ProfileComponent } from './components/profile/profile.component';
+import { HomeComponent } from './components/home/home.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { AfterLoginService } from './services/afterLogin';
+import { BeforeLoginService } from './services/beforeLogin';
 import { RequestResetComponent } from './components/password/request-reset/request-reset.component';
 import { ResponseResetComponent } from './components/password/response-reset/response-reset.component';
-import { BeforeLoginService } from './services/before-login.service';
-import { AfterLoginService } from './services/after-login.service';
+import { IsCompanyAdminService } from './services/is-company-admin.service'
+import { ProfileComponent } from './components/profile/profile.component';
 
 const appRoutes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [BeforeLoginService]
+    canActivate : [BeforeLoginService]
+  },
+  {
+    path: 'reset-password',
+    component : RequestResetComponent,
+    canActivate : [BeforeLoginService]
+  },
+  {
+    path: 'reset-password-submit',
+    component : ResponseResetComponent,
+    canActivate : [BeforeLoginService]
   },
   {
     path: 'signup',
     component: SignupComponent,
-    canActivate: [BeforeLoginService]
+    canActivate : [AfterLoginService]
   },
   {
-    path: 'profile',
+    path: 'users',
     component: ProfileComponent,
-    canActivate: [AfterLoginService]
+    canActivate : [AfterLoginService]
   },
   {
-    path: 'request-password-reset',
-    component: RequestResetComponent,
-    canActivate: [BeforeLoginService]
-  },
+    path: '',
+    component: HomeComponent
+    },
+    {
+      path: 'dashboard',
+      component: ProfileComponent,
+      canActivate : [IsCompanyAdminService]
+    },
   {
-    path: 'response-password-reset',
-    component: ResponseResetComponent,
-    canActivate: [BeforeLoginService]
-  },
+    path: 'notice',
+    component: DashboardComponent,
+    canActivate : [AfterLoginService]
+  }
 ];
 
 @NgModule({

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { JarwisService } from '../../../services/jarwis.service';
-import { SnotifyService } from 'ng-snotify';
+import { ApiService } from '../../../services/api.service';
+import {SnotifyService} from 'ng-snotify';
 
 @Component({
   selector: 'app-request-reset',
@@ -8,31 +8,31 @@ import { SnotifyService } from 'ng-snotify';
   styleUrls: ['./request-reset.component.css']
 })
 export class RequestResetComponent implements OnInit {
+
   public form = {
-    email: null
+    email : null
   };
 
+  public error = null;
 
   constructor(
-    private Jarvis: JarwisService,
-    private notify: SnotifyService,
-    private Notfiy:SnotifyService
-  ) { }
+    private api : ApiService,
+    private notify : SnotifyService
+    ) {}
 
   ngOnInit() {
   }
 
-
-  onSubmit() {
-    this.Notfiy.info('Wait...' ,{timeout:5000})
-    this.Jarvis.sendPasswordResetLink(this.form).subscribe(
+  onSubmit(){
+    this.notify.info('Wait...', {timeout:5000});
+    return this.api.post('sendPasswordReset', this.form).subscribe(
       data => this.handleResponse(data),
-      error => this.notify.error(error.error.error)
+      error => this.notify.error(error.error.error, {timeout:0})
     );
   }
 
-  handleResponse(res) {
-    this.Notfiy.success(res.data,{timeout:0});
+  handleResponse(data){
+    this.notify.info(data.data, {timeout:0});
     this.form.email = null;
   }
 

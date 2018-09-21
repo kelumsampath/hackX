@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { JarwisService } from '../../services/jarwis.service';
+import { ApiService } from '../../services/api.service';
 import { TokenService } from '../../services/token.service';
 import { Router } from '@angular/router';
+import { SnotifyService } from 'ng-snotify';
 
 @Component({
   selector: 'app-signup',
@@ -11,35 +12,52 @@ import { Router } from '@angular/router';
 export class SignupComponent implements OnInit {
 
   public form = {
-    email: null,
-    name: null,
-    password: null,
-    password_confirmation: null
+    name : null,
+    email : null,
+    password : null,
+    password_confirmation : null,
+    terms : false,
+    role : null
   };
+
   public error = [];
+  public company = true;
 
   constructor(
-    private Jarwis: JarwisService,
-    private Token: TokenService,
-    private router: Router
-  ) { }
-
-  onSubmit() {
-    this.Jarwis.signup(this.form).subscribe(
-      data => this.handleResponse(data),
-      error => this.handleError(error)
-    );
-  }
-  handleResponse(data) {
-    this.Token.handle(data.access_token);
-    this.router.navigateByUrl('/profile');
-  }
-
-  handleError(error) {
-    this.error = error.error.errors;
-  }
+    private api : ApiService,
+    private token : TokenService,
+    private router : Router,
+    private notify : SnotifyService
+    ) { }
 
   ngOnInit() {
+    var user = JSON.parse(this.token.getUser());
+    var role = user.role;
+
+    if(role == 'Student' || role == 'Teacher' || role == 'Parent')
+      this.router.navigateByUrl('/notices');
+
+    if(role == 'CompanyAdmin')
+      this.company = true;
+    else
+      this.company = false;
+  }
+
+  onSubmit(){
+    return this.api.post('signup', this.form).subscribe(
+      data => this.tokenHandler(data),
+      error => this.errorHandle(error)
+    );
+  }
+
+  tokenHandler(data){
+    this.notify.info("Added Succesfully", {timeout:2000});
+    //this.token.set(data);
+    this.router.navigateByUrl('/users');
+  }
+  
+  errorHandle(error){
+    this.error = error.error.errors;
   }
 
 }

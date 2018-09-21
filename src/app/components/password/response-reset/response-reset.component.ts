@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JarwisService } from '../../../services/jarwis.service';
-import {  SnotifyService } from 'ng-snotify';
+import { ApiService } from '../../../services/api.service';
+import { TokenService } from '../../../services/token.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { SnotifyService } from 'ng-snotify';
 
 @Component({
   selector: 'app-response-reset',
@@ -9,50 +11,53 @@ import {  SnotifyService } from 'ng-snotify';
   styleUrls: ['./response-reset.component.css']
 })
 export class ResponseResetComponent implements OnInit {
-  public error=[];
+
   public form = {
     email : null,
     password : null,
-    password_confirmation:null,
-    resetToken :null
-  }
+    password_confirmation : null,
+    resetToken : null
+  };
+
   constructor(
-    private route:ActivatedRoute,
-    private Jarwis: JarwisService,
-    private router:Router,
-    private Notify:SnotifyService
+    private api : ApiService,
+    private token : TokenService,
+    private router : Router,
+    private auth : AuthService,
+    private notify: SnotifyService,
+    private route : ActivatedRoute
   ) { 
     route.queryParams.subscribe(params => {
-      this.form.resetToken = params['token']
-    });
+      this.form.resetToken = params['token'];
+    })
+  }
+
+  ngOnInit() {
   }
 
   onSubmit(){
-   this.Jarwis.changePassword(this.form).subscribe(
-     data => this.handleResponse(data),
-     error => this.handleError(error)
-   )
-  }
-  handleResponse(data){
-
-    let _router = this.router;
-    this.Notify.confirm('Done!, Now login with new Password', {
-      buttons:[
-        {text: 'Okay', 
-        action: toster =>{
-           _router.navigateByUrl('/login'),
-           this.Notify.remove(toster.id)
-          }
-      },
-      ]
-    })
-    
+    return this.api.post('responsePasswordReset', this.form).subscribe(
+      data => this.resetHandler(data),
+      error => this.handleerror(error)
+    );
   }
 
-  handleError(error){
-    this.error = error.error.errors;
+  handleerror(error){
+    if(error.error.errors){
+      if(error.error.errors.email)
+        this.notify.error(error.error.errors.email, {timeout:0})
+      if(error.error.errors.password)
+        this.notify.error(error.error.errors.password, {timeout:0})
+    }
+
+    if(error.error.error)
+        this.notify.error(error.error.error, {timeout:0})
   }
-  ngOnInit() {
+
+  resetHandler(data){
+    this.notify.info(data.data, {timeout:2000});
+    this.token.remove();
+    this.router.navigateByUrl('/login');
   }
 
 }
